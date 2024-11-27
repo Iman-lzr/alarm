@@ -28,10 +28,10 @@ class AlarmAdapter(private val alarms: MutableList<Alarm>, private val context: 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
         val alarm = alarms[position]
         holder.timeText.text = alarm.time
-        holder.daysText.text = alarm.days.joinToString(", ") // Affiche les jours
-        holder.alarmSwitch.isChecked = alarm.isActive // Met à jour l'état du Switch selon l'alarme
+        holder.daysText.text = alarm.days.joinToString(", ")
+        holder.alarmSwitch.isChecked = alarm.isActive
 
-        // Ajouter un listener pour l'état du Switch
+
         holder.alarmSwitch.setOnCheckedChangeListener { _, isChecked ->
             alarm.isActive = isChecked
             if (isChecked) {

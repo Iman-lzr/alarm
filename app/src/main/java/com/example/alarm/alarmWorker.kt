@@ -28,7 +28,7 @@ class AlarmWorker(context: Context, workerParams: WorkerParameters) : Worker(con
             .setContentTitle("Alarm")
             .setContentText("Time to wake up!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI) // Utilisation du son par défaut
+            .setSound(android.provider.Settings.System.DEFAULT_RINGTONE_URI)
             .build()
 
         val notificationManager = NotificationManagerCompat.from(applicationContext)

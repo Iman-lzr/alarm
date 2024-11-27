@@ -28,27 +28,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Référence à la FloatingActionButton
+
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
-        // Création du canal de notification
+
         createNotificationChannel()
 
-        // Initialiser SharedPreferences
+
         sharedPreferences = getSharedPreferences("AlarmPreferences", MODE_PRIVATE)
 
-        // Initialiser le RecyclerView
+
         alarmRecyclerView = findViewById(R.id.recyclerView)
         alarmRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Initialiser l'adaptateur avec la liste des alarmes
+
         alarmAdapter = AlarmAdapter(alarms, this)
         alarmRecyclerView.adapter = alarmAdapter
 
-        // Charger les alarmes précédemment enregistrées
+
         loadAlarms()
 
-        // Clic sur le FloatingActionButton pour afficher le TimePickerDialog
+
         fab.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
                 this,
@@ -63,21 +63,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Méthode pour afficher le dialogue de sélection des jours
+
     private fun showDaySelectionDialog(hour: Int, minute: Int) {
         val daysOfWeek = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-        val selectedDays = BooleanArray(daysOfWeek.size) // Tableau pour garder la trace des jours sélectionnés
+        val selectedDays = BooleanArray(daysOfWeek.size)
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Select Days")
 
-        // Créer une vue de cases à cocher pour chaque jour de la semaine
+
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
         for (i in daysOfWeek.indices) {
             val checkBox = CheckBox(this)
             checkBox.text = daysOfWeek[i]
-            checkBox.isChecked = false // Initialement, aucun jour n'est sélectionné
+            checkBox.isChecked = false
             layout.addView(checkBox)
         }
 
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         builder.show()
     }
 
-    // Méthode pour planifier l'alarme
+
     private fun scheduleAlarm(hour: Int, minute: Int, selectedDays: List<String>) {
         val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
@@ -112,45 +112,45 @@ class MainActivity : AppCompatActivity() {
 
         val alarmTime = calendar.timeInMillis
 
-        // Créer une nouvelle alarme avec les jours sélectionnés et l'heure
+
         val newAlarm = Alarm(
             time = String.format("%02d:%02d", hour, minute),
-            days = selectedDays, // Utiliser les jours sélectionnés
+            days = selectedDays,
             isActive = true
         )
 
-        // Ajouter l'alarme à la liste
+
         alarms.add(newAlarm)
 
-        // Notifier l'adaptateur de la mise à jour
+
         alarmAdapter.notifyItemInserted(alarms.size - 1)
 
-        // Sauvegarder l'alarme dans SharedPreferences
+
         saveAlarm(hour, minute, selectedDays)
 
-        // Créer une demande de travail pour la notification de l'alarme
+
         val workRequest = OneTimeWorkRequest.Builder(AlarmWorker::class.java)
             .setInitialDelay(alarmTime - System.currentTimeMillis(), java.util.concurrent.TimeUnit.MILLISECONDS)
             .build()
 
-        // Planifier le travail avec WorkManager
+
         WorkManager.getInstance(this).enqueue(workRequest)
     }
 
-    // Méthode pour enregistrer l'alarme dans SharedPreferences
+
     private fun saveAlarm(hour: Int, minute: Int, selectedDays: List<String>) {
         val editor = sharedPreferences.edit()
 
-        // Sauvegarder l'heure sous forme de chaîne
+
         editor.putString("alarm_time", String.format("%02d:%02d", hour, minute))
 
-        // Sauvegarder les jours sélectionnés sous forme de chaîne séparée par des virgules
+
         editor.putString("alarm_days", selectedDays.joinToString(","))
 
         editor.apply()
     }
 
-    // Méthode pour charger les alarmes depuis SharedPreferences
+    // SharedPreferences
     private fun loadAlarms() {
         val time = sharedPreferences.getString("alarm_time", null)
         val daysString = sharedPreferences.getString("alarm_days", null)
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Méthode pour créer le canal de notification (nécessaire pour Android Oreo et versions ultérieures)
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
