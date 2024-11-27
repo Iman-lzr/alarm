@@ -4,6 +4,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.TimePickerDialog
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             val timePickerDialog = TimePickerDialog(
-                this,
+                this, R.style.CustomTimePickerDialog,
                 { _, hourOfDay, minute ->
                     showDaySelectionDialog(hourOfDay, minute)
                 },
@@ -59,6 +61,14 @@ class MainActivity : AppCompatActivity() {
                 Calendar.getInstance().get(Calendar.MINUTE),
                 true
             )
+            timePickerDialog.setOnShowListener {
+                val buttonOk = timePickerDialog.getButton(TimePickerDialog.BUTTON_POSITIVE)
+                val buttonCancel = timePickerDialog.getButton(TimePickerDialog.BUTTON_NEGATIVE)
+
+
+                buttonOk.setTextColor(Color.RED)
+                buttonCancel.setTextColor(Color.RED)
+            }
             timePickerDialog.show()
         }
     }
@@ -74,14 +84,29 @@ class MainActivity : AppCompatActivity() {
 
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
+        layout.setPadding(20, 20, 20, 20)
+
+
         for (i in daysOfWeek.indices) {
             val checkBox = CheckBox(this)
             checkBox.text = daysOfWeek[i]
-            checkBox.isChecked = false
+            checkBox.setTextColor(Color.BLACK)
+            checkBox.isChecked = selectedDays[i]
+
+
+            checkBox.buttonTintList = ColorStateList.valueOf(Color.RED)
+
+
             layout.addView(checkBox)
+
+
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                selectedDays[i] = isChecked
+            }
         }
 
         builder.setView(layout)
+
 
         builder.setPositiveButton("OK") { _, _ ->
             val selectedDaysList = mutableListOf<String>()
@@ -94,9 +119,23 @@ class MainActivity : AppCompatActivity() {
             scheduleAlarm(hour, minute, selectedDaysList)
         }
 
-        builder.setNegativeButton("Cancel", null)
 
-        builder.show()
+        builder.setNegativeButton("Cancel") { _, _ ->
+
+        }
+
+        val dialog = builder.create()
+
+
+        dialog.setOnShowListener {
+            val buttonOk = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+            buttonOk.setTextColor(Color.RED)
+            buttonCancel.setTextColor(Color.RED)
+        }
+
+        dialog.show()
     }
 
 
@@ -106,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             if (timeInMillis < System.currentTimeMillis()) {
-                add(Calendar.DATE, 1) // Si l'heure est déjà passée, configure l'alarme pour demain
+                add(Calendar.DATE, 1)
             }
         }
 
