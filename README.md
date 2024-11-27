@@ -19,7 +19,7 @@
         <span>TimePicker</span>
         <br>
         <br>
-        <img width="200" height="350" alt="Démarrage de l'application" src="https://github.com/user-attachments/assets/d284829c-02e9-40ad-b665-a30402a84686">
+        <img width="200" height="350" alt="Démarrage de l'application" src="https://github.com/user-attachments/assets/42ec06a2-282c-4ee5-ab84-0873db46f5cf">
       </td>
        <td align="center">
         <span>Select Days </span>
